@@ -1,0 +1,70 @@
+#
+# Makefile
+#
+#  This is a Makefile Skeleton for the programmer project
+#
+#  Copyright (C) 2014 by William P. Foster, all rights reserved
+#
+
+srcdir = src
+BIN_INSTALL = /usr/local/bin
+LIBIN = $(HOME)/Libraries/Unix
+SOIN = $9HOME)/Libraries/Unix
+EXLIB = -ldl -lpthread -lrt -lm
+FOXSO = -lFOX-1.6
+# FOXSO = /usr/local/lib/libFOX-1.6.so -lGLU -lGL -lz
+FOXLIB = -L/usr/X11R6/lib -lXrandr $(SOIN)/libFOX-1.6.a -lm
+includes = ../../Engines/BFC/include
+DEFS = -D UNIX
+CCPP = gcc
+CPPDEBUG = -g -D _DEBUG
+CPPFLAGS = -I$(srcdir) -I$(includes) -fPIC $(DEFS)
+
+DEBUG_BFC = $(SOIN)/BFC_d.so.1 $(SOIN)/BFCScript_d.so.1 $(SOIN)/BFCGUI_d.so.1 $(SOIN)/BFCOS_d.so.1 $(SOIN)/BFCData_d.so.1 $(SOIN)/BFCVector_d.so.1 $(SOIN)/BFCImage_d.so.1
+RELEASE_BFC = $(LIBIN)/BFC.lib $(LIBIN)/BFCScript.lib $(LIBIN)/BFCGUI.lib $(LIBIN)/BFCOS.lib $(LIBIN)/BFCData.lib $(LIBIN)/BFCVector.lib $(LIBIN)/BFCImage.lib
+
+# ifeq ($(CC),gcc)
+#   libs=$(libs_for_gcc)
+# else
+#   libs=$(normal_libs)
+# endif
+
+Debug/%.o ($srcdir)/%.cpp :
+	$(CCPP) -c $(CPPFLAGS) $(CPPDEBUG) $< -o $@
+
+Release/%.o ($srcdir)/%.cpp :
+	$(CCPP) -c $(CPPFLAGS) $< -o $@
+
+all : create debug 
+
+backup:
+	programmer -b .
+
+create :
+	mkdir -p Debug
+	mkdir -p Release
+	programmer -q -mp src
+
+clean :
+	rm -f Debug/*.*
+	rm -f Release/*.*
+
+head :
+	programmer -h header src/*.cpp
+	programmer -h header src/*.h
+
+bfcscript :
+	./makebfcscript
+
+debug : $(ALL_DEBUG_OBJ)
+	g++ -o Debug/programmer.bin $(ALL_DEBUG_OBJ) $(FOXSO) $(DEBUG_BFC)  $(EXLIB)
+
+release : $(ALL_RELEASE_OBJ)
+	g++ -o Release/programmer.bin $(ALL_RELEASE_OBJ) $(RELEASE_BFC) $(FOXSO) $(EXLIB)
+
+#	g++ -Wl -o Release/programmer.bin $(ALL_RELEASE_OBJ) $(SOIN)/BFC.so $(SOIN)/BFCScript.so $(SOIN)/BFCOS.so $(SOIN)/BFCGUI.so $(SOIN)/BFCData.so $(SOIN)/BFCImage.so $(SOIN)/BFCVector.so $(FOXLIB)
+
+install: release
+	sudo cp Release/programmer.bin $(BIN_INSTALL)/programmer
+
+
