@@ -1,6 +1,6 @@
 # programmer
 
-A utility to 
+A coder's companion for working with source files.
 
 ## Licensing
 This library is licensed under the GNU General Public License v3.0 or later.
@@ -15,6 +15,6 @@ make
 sudo make install
 ```
 
-## To build in Windows, work with the Header.vcxproj (programmer.sln)
+## To build in Windows, use Visual Studio with the Header.vcxproj (programmer.sln)
 
 
