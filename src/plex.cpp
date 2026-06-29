@@ -24,10 +24,6 @@
 */
 
 //*/
-
-/*
-	Copyright (C) 1990,93,2006 by William Paul Foster, all rights reserved
-*/
 /*
  LEX: - see lex.man	
 	 9/11/09 - added grep suboptions (wholeword, nocase) - turn the operation representation from a simple integer to a class

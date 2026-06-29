@@ -7,10 +7,13 @@ This library is licensed under the GNU General Public License v3.0 or later.
 See the file LICENSE for details.
 Source code is available at: https://github.com/BillCoder-cpu/programmer
 
-## ?? Quick Start
+## Dependencies
+BFC libraries: (https://github.com/BillCoder-cpu/BFC)
+
+## Quick Start
 ```
 git clone https://github.com/BillCoder-cpu/programmer.git
-cd BFC
+cd programmer
 make
 sudo make install
 ```
