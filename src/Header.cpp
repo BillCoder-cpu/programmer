@@ -196,7 +196,6 @@ character	*Header::GetHeaderStart()
 	return hs;
 }
 
-
 character	*Header::GetHeaderEnd()
 {
 	character	*he = NULL;
@@ -217,7 +216,8 @@ bool Header::RecognizeHeaderStart (CBfc_String &cs)
 	character	*looks=GetHeaderStart();
 	if (looks)
 	{
-		if (cs.Compare(looks)==0)
+		int length = wcslen(looks);
+		if (cs.GetLengthChars() == length && cs.Compare(looks)==0)
 			return true;
 	}
 	return false;
@@ -229,7 +229,8 @@ bool Header::RecognizeHeaderEnd (CBfc_String &cs)
 
 	if (looks)
 	{
-		if (cs.Compare(looks)==0)
+		int length = wcslen(looks);
+		if (cs.GetLengthChars() == length && cs.Compare(looks)==0)
 			return true;
 	}
 	return false;

@@ -52,6 +52,7 @@
 */
 
 #include "stdafx.h"
+#include "AIFeeder.h"
 #include "Header.h"
 #include "Codify.h"
 #include "MakeMakefile.h"
@@ -79,6 +80,22 @@ void CheckForMakeArgs(char *argv[], int a, int ii)
 	}
 }
 
+bool PerformFileOperation(int a, int argc, char* argv[], CBfcOS::FileOperationClass& fopTarget, bool b_recurse_subfolders)
+{
+	bool b_workdone = false;
+	while (a < argc)
+	{
+		const Filename	cs_TargetFilespec(argv[a++]);
+#if 0
+		CBfcOS::FolderOperation	fop(cs_TargetFilespec, b_recurse_subfolders);
+#else
+		CBfcOS::FileOperation	fop(cs_TargetFilespec, b_recurse_subfolders);
+#endif
+		b_workdone |= fop.Operate(&fopTarget) > 0;
+	}
+	return b_workdone;
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -89,7 +106,7 @@ int main(int argc, char* argv[])
 	bool		b_backup = false;
 	bool		b_clean = false;
 	bool		b_codify = false;
-	bool		b_set_headers = false;
+	bool		b_set_headers = false, b_feed_ai = false;
 	bool		b_run_plex = false;
 	bool		b_make_makefiles = false;
 	bool		b_recurse_subfolders = false;
@@ -98,7 +115,7 @@ int main(int argc, char* argv[])
 	bool		b_help = false;
 	bool		b_dump_csv = false;
 	Filename csvfilename;
-	Filename	header_fname;
+	Filename	header_fname, prompt_fname;
 	Filename	makebase;
 	Filename	plexfilename;
 	STRING		grep_string;
@@ -108,6 +125,14 @@ int main(int argc, char* argv[])
 	{
 		switch (tolower(argv[a][1]))
 		{
+			case 'a':
+				if (argc > a + 2)
+				{
+					prompt_fname = argv[++a];
+					b_operate = true;
+					b_feed_ai = true;
+				}
+				break;
 			case 'b':
 				b_backup = true;
 				b_operate = true;
@@ -183,28 +208,20 @@ int main(int argc, char* argv[])
 		STRING	sCredits;
 		CBfcOS::OS_Static::GetCreditsString(sCredits);
 		_tprintf (_TXT("\n"));
-		_tprintf (_TXT("Programmer version 1.7 : September 13, 2020\n"));
-		_tprintf (_TXT("   Copyright (C) 2004-2020 by William P. Foster, all rights reserved.\n"));
+		_tprintf (_TXT("Programmer version 1.8 : June 29, 2026\n"));
+//		_tprintf (_TXT("   Copyright (C) 2004- by William P. Foster, all rights reserved.\n"));
 		_tprintf (sCredits.GetPtr());
 		_tprintf (_TXT("\n"));
 	}
 	if (b_set_headers)
 	{
 		Header			h(header_fname, b_header_phantomfolder);
-
-		while (a < argc)
-		{
-#if 0
-			const Filename	cs_TargetFilespec (argv[a++]);
-			CBfcOS::FolderOperation	fop(cs_TargetFilespec, b_recurse_subfolders);
-			b_workdone |= (fop.Operate(&h) > 0);
-#else
-			const Filename	cs_TargetFilespec (argv[a++]);
-
-			CBfcOS::FileOperation	fop(cs_TargetFilespec, b_recurse_subfolders);
-			b_workdone |= (fop.Operate(&h) > 0);
-#endif
-		}
+		b_workdone |= PerformFileOperation(a, argc, argv, h, b_recurse_subfolders);
+	}
+	if (b_feed_ai)
+	{
+		AIFeeder		aif(prompt_fname);
+		b_workdone |= PerformFileOperation(a, argc, argv, aif, b_recurse_subfolders);
 	}
 	if (b_grep)
 	{
@@ -227,17 +244,15 @@ int main(int argc, char* argv[])
 	{
 		PLex	pl(plexfilename);
 		while (a < argc) {
+			const Filename	cs_TargetFilespec (argv[a++]);
 #if 0
-			const Filename	cs_TargetFilespec (argv[a++]);
 			CBfcOS::FolderOperation	fop(cs_TargetFilespec, b_recurse_subfolders);
-			b_workdone |= (fop.Operate(&pl) > 0);
 #else
-			const Filename	cs_TargetFilespec (argv[a++]);
 
 			CBfcOS::FileOperation	fop(cs_TargetFilespec, b_recurse_subfolders);
 			fop.m_cs_ignoreFolderSpec = ".*";
-			b_workdone |= (fop.Operate(&pl) > 0);
 #endif
+			b_workdone |= (fop.Operate(&pl) > 0);
 		}
 		pl.CleanUp();
 	}

@@ -102,6 +102,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AIFeeder.cpp" />
     <ClCompile Include="src\BackupSources.cpp" />
     <ClCompile Include="src\Flow.cpp" />
     <ClCompile Include="src\Header.cpp" />
@@ -112,6 +113,7 @@
     <ClCompile Include="src\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AIFeeder.h" />
     <ClInclude Include="src\BackupSources.h" />
     <ClInclude Include="src\Codify.h" />
     <ClInclude Include="src\Header.h" />
