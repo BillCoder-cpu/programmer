@@ -215,24 +215,15 @@ bool Header::RecognizeHeaderStart (CBfc_String &cs)
 {
 	character	*looks=GetHeaderStart();
 	if (looks)
-	{
-		int length = wcslen(looks);
-		if (cs.GetLengthChars() == length && cs.Compare(looks)==0)
-			return true;
-	}
+		return cs.CompareAsString(looks) == 0;
 	return false;
 }
 
 bool Header::RecognizeHeaderEnd (CBfc_String &cs)
 {
 	character	*looks=GetHeaderEnd();
-
 	if (looks)
-	{
-		int length = wcslen(looks);
-		if (cs.GetLengthChars() == length && cs.Compare(looks)==0)
-			return true;
-	}
+		return cs.CompareAsString(looks) == 0;
 	return false;
 }
 
